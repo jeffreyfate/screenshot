@@ -1,11 +1,7 @@
 package com.jeffthefate;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,10 +10,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
-
-import javax.imageio.ImageIO;
+import java.util.TimeZone;
 
 public class TriviaScreenshot extends Screenshot {
 	
@@ -34,7 +28,7 @@ public class TriviaScreenshot extends Screenshot {
     		int limit) {
     	FileInputStream fileInput = null;
 		try {
-			fileInput = new FileInputStream(new File(templateFile));
+			fileInput = new FileInputStream(new File(getTemplateFile()));
 		} catch (FileNotFoundException e2) {
 			e2.printStackTrace();
 			return null;
@@ -55,11 +49,13 @@ public class TriviaScreenshot extends Screenshot {
 	        g2d.setPaint(Color.white);
 	        Font font = new Font("Serif", Font.BOLD, mainFontSize);
 	        try {
-				font = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));
+				font = Font.createFont(Font.TRUETYPE_FONT,
+                        new File(getFontFile()));
 				font = font.deriveFont((float)mainFontSize).deriveFont(
 						Font.BOLD);
 			} catch (FontFormatException e1) {
-				System.out.println("Couldn't create font from " + fontFile);
+				System.out.println("Couldn't create font from " +
+                        getFontFile());
 				e1.printStackTrace();
 			}
 	        g2d.setFont(font);
@@ -95,11 +91,13 @@ public class TriviaScreenshot extends Screenshot {
 	        String dateString = dateFormat.format(date);
 	        font = new Font("Serif", Font.BOLD, dateFontSize);
 	        try {
-				font = Font.createFont(Font.TRUETYPE_FONT, new File(fontFile));
+				font = Font.createFont(Font.TRUETYPE_FONT,
+                        new File(getFontFile()));
 				font = font.deriveFont((float)dateFontSize).deriveFont(
 						Font.BOLD);
 			} catch (FontFormatException e1) {
-				System.out.println("Couldn't create font from " + fontFile);
+				System.out.println("Couldn't create font from " +
+                        getFontFile());
 				e1.printStackTrace();
 			}
 	        g2d.setFont(font);

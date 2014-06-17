@@ -1,35 +1,59 @@
 package com.jeffthefate;
 
-import java.util.HashMap;
-
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Assert;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Unit test for simple App.
  */
-public class ScreenshotTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public ScreenshotTest( String testName )
-    {
-        super( testName );
+public class ScreenshotTest extends TestCase {
+
+    public void testWillTextFit() {
+        Screenshot screenshot = new Screenshot("", "", 180) {};
+        BufferedImage bufferedImage = new BufferedImage(400, 800,
+                BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        Assert.assertTrue("One line doesn't fit in 800 pixels!",
+                screenshot.willTextFit(800, g2d, 1));
+        Assert.assertTrue("10 lines doesn't fit in 800 pixels!",
+                screenshot.willTextFit(800, g2d, 10));
+        Assert.assertFalse("100 lines fit in 800 pixels!",
+                screenshot.willTextFit(800, g2d, 100));
+        Assert.assertFalse("1000 lines fit in 800 pixels!",
+                screenshot.willTextFit(800, g2d, 1000));
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( ScreenshotTest.class );
+    public void testAddCenteredStringToImage() {
+        Screenshot screenshot = new Screenshot("", "", 180) {};
+        BufferedImage bufferedImage = new BufferedImage(400, 800,
+                BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        Assert.assertEquals("Height of text drawn is wrong!", 16,
+                screenshot.addCenteredStringToImage(0, 0, g2d, "TEST STRING"));
     }
-    
+
+    public void testAddStringToImage() {
+        Screenshot screenshot = new Screenshot("", "", 180) {};
+        BufferedImage bufferedImage = new BufferedImage(400, 800,
+                BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        Assert.assertEquals("Height of text drawn is wrong!", 16,
+                screenshot.addStringToImage(0, 0, g2d, "TEST STRING"));
+    }
+
+    public void testCropImage() {
+        Screenshot screenshot = new Screenshot("", "", 180) {};
+        BufferedImage bufferedImage = new BufferedImage(400, 800,
+                BufferedImage.TYPE_INT_RGB);
+        BufferedImage croppedImage = screenshot.cropImage(bufferedImage, 0, 0,
+                40, 80, 5);
+        assertEquals("Cropped width is wrong!", croppedImage.getWidth(), 40);
+        assertEquals("Cropped height is wrong!", croppedImage.getHeight(), 85);
+    }
+    /*
     public void testReallyLongSetlist() {
         SetlistScreenshot setlistScreenshot = new SetlistScreenshot(
         		"D:\\setlist.jpg", "D:\\roboto.ttf", "May 17 2014\nDave Matthews Band\nGexa Energy Pavilion\nDallas, TX\n\nRecently*\nGrace Is Gone+\nLie In Our Graves~\nStolen Away On 55th & 3rdÄ\nCrash Into MeÄ\nSo Damn LuckyÄ\nSugar ManÄ\nAnts MarchingÄ\n\nSet Break\n\n#27\nShake Me Like A Monkey\nCrush\nSpaceman ->\nCorn Bread\n#41\nProudest Monkey->\nSatellite\nYou and Me\nJTR\nSweet Up and Down\nDancing Nancies ->\nDrive In Drive Out\nAngel\nRooftop\nBelly Belly Nice\nJimi Thing\n\nEncore:\nSister5||\nAll Along The Watchtower\n\nNotes:\n\n* Carter and Dave\n+ Carter, Dave and Tim\n~ Boyd, Carter, Dave and Tim\nÄ All\n5|| Dave, Carter, Rashawn and Tim\n-> indicates a segue into next song", 60, 180);
@@ -94,4 +118,5 @@ public class ScreenshotTest
     			60, 30, 10, 200);
     	System.out.println(triviaScreenshot.getOutputFilename());
     }
+    */
 }

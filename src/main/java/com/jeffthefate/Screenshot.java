@@ -1,12 +1,9 @@
 package com.jeffthefate;
 
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import org.apache.log4j.Logger;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 
 /**
  * Hello world!
@@ -16,14 +13,32 @@ public abstract class Screenshot {
 	
 	protected final int TEXT_HEIGHT_OFFSET = 2;
 	protected final String TWEET_DATE_FORMAT = "yyyy-MM-dd";
-	
-	protected String templateFile;
-	protected String fontFile;
+
+    public String getTemplateFile() {
+        return templateFile;
+    }
+
+    public void setTemplateFile(String templateFile) {
+        this.templateFile = templateFile;
+    }
+
+    public String getFontFile() {
+        return fontFile;
+    }
+
+    public void setFontFile(String fontFile) {
+        this.fontFile = fontFile;
+    }
+
+    private String templateFile;
+	private String fontFile;
 	private String outputFile;
 	private int verticalOffset;
+
+    private Logger logger = Logger.getLogger(Screenshot.class);
 	
 	public Screenshot(String templateFile, String fontFile,
-			int verticalOffset) {
+            int verticalOffset) {
 		this.templateFile = templateFile;
 		this.fontFile = fontFile;
 		this.verticalOffset = verticalOffset;
@@ -40,33 +55,49 @@ public abstract class Screenshot {
 	public int getVerticalOffset() {
 		return verticalOffset;
 	}
-	
-	protected boolean willTextFit(int imageHeight, Graphics2D g2d,
-    		int numLines) {
-    	FontMetrics fm = g2d.getFontMetrics();
-    	int totalTextHeight = numLines * (fm.getHeight() - TEXT_HEIGHT_OFFSET);
-    	System.out.println(imageHeight + " : " + totalTextHeight);
+
+    /**
+     * Check if another line of text will fit on the image.
+     *
+     * @param imageHeight   height of the image to be drawn on
+     * @param g2d           graphics object that will be drawn on
+     * @param numLines      number of lines of text to be drawn
+     * @return              true if the text will fit
+     */
+	boolean willTextFit(int imageHeight, Graphics2D g2d,
+            int numLines) {
+    	int totalTextHeight = numLines * (g2d.getFontMetrics().getHeight() -
+                TEXT_HEIGHT_OFFSET);
     	return totalTextHeight <= (imageHeight - verticalOffset);
     }
-	
-	protected int addCenteredStringToImage(int startHeight, int width,
+
+    /**
+     * Add a horizontally centered string to the image.
+     *
+     * @param startHeight   vertical position to start drawing text
+     * @param width         horizontal size of image to be drawn on
+     * @param g2d           graphics object to draw on
+     * @param string        text to draw
+     * @return              height of the text that was drawn
+     */
+	int addCenteredStringToImage(int startHeight, int width,
     		Graphics2D g2d, String string) {
     	FontMetrics fm = g2d.getFontMetrics();
     	int stringWidth = fm.stringWidth(string);
-        int x = (width / 2) - (stringWidth / 2);
-        int textHeight = fm.getHeight();
-        int y = textHeight + startHeight;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-    			RenderingHints.VALUE_ANTIALIAS_ON);
-    	g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-    	        RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-    	g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-    			RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.drawString(string, x, y);
-        return textHeight;
+        return addStringToImage(startHeight, (width / 2) - (stringWidth / 2),
+                g2d, string);
     }
-    
-	protected int addStringToImage(int startHeight, int startPos,
+
+    /**
+     * Add a string to the image at the given position.
+     *
+     * @param startHeight   vertical position to start drawing text
+     * @param startPos      horizontal position to start drawing text
+     * @param g2d           graphics object to draw on
+     * @param string        text to draw
+     * @return              height of the text that was drawn
+     */
+	int addStringToImage(int startHeight, int startPos,
     		Graphics2D g2d, String string) {
     	FontMetrics fm = g2d.getFontMetrics();
         int x = startPos;
@@ -75,119 +106,55 @@ public abstract class Screenshot {
         g2d.drawString(string, x, y);
         return textHeight;
     }
-    
-	protected int addLeftStringToImage(int startHeight, int width,
-    		Graphics2D g2d, String string) {
-    	FontMetrics fm = g2d.getFontMetrics();
-        int x = 0 + 8;
-        int textHeight = fm.getHeight();
-        int y = textHeight + startHeight;
-        g2d.drawString(string, x, y);
-        return textHeight;
-    }
-    
-	protected int addRightStringToImage(int startHeight, int width,
-    		Graphics2D g2d, String string) {
-    	FontMetrics fm = g2d.getFontMetrics();
-    	int stringWidth = fm.stringWidth(string);
-        int x = width - stringWidth - 8;
-        int textHeight = fm.getHeight();
-        int y = textHeight + startHeight;
-        g2d.drawString(string, x, y);
-        return textHeight;
-    }
-	
-	protected BufferedImage cropImage(BufferedImage img, int startX, int startY,
+
+    /**
+     * Crop the current image to the given size dimensions.
+     *
+     * @param img           image to crop
+     * @param startX        start horizontal position of the cropped image
+     * @param startY        start vertical position of the cropped image
+     * @param cropWidth     total width of the cropped image
+     * @param cropHeight    total height of the cropped image
+     * @param bottomBuffer  extra space to include at the bottom of the cropped
+     *                      image
+     * @return              the newly cropped image
+     */
+	BufferedImage cropImage(BufferedImage img, int startX, int startY,
 			int cropWidth, int cropHeight, int bottomBuffer) {
-		BufferedImage cropped = null;
 		Dimension size = new Dimension(cropWidth, cropHeight + bottomBuffer);
 		Rectangle clip = createClip(img, size, startX, startY);
 		int w = clip.width;
 		int h = clip.height;
 		 
-		System.out.println("Crop Width " + w);
-		System.out.println("Crop Height " + h);
-		System.out.println("Crop Location " + "(" + clip.x + "," + clip.y
-				+ ")");
-		 
-		cropped = img.getSubimage(clip.x, clip.y, w, h);
-		 
-		System.out.println("Image Cropped. New Image Dimension: "
-				+ cropped.getWidth() + "w X " + cropped.getHeight() + "h");
-		return cropped;
+		return img.getSubimage(clip.x, clip.y, w, h);
 	}
-	
-	/**
-	* This method crops an original image to the crop parameters provided.
-	*
-	* If the crop rectangle lies outside the rectangle (even if partially),
-	* adjusts the rectangle to be included within the image area.
-	*
-	* @param img = Original Image To Be Cropped
-	* @param size = Crop area rectangle
-	* @param clipX = Starting X-position of crop area rectangle
-	* @param clipY = Strating Y-position of crop area rectangle
-	* @throws Exception
-	*/
+
 	private Rectangle createClip(BufferedImage img, Dimension size, int clipX,
-			int clipY) {
-		/**
-		* Sometimes clip area might lie outside the original image,
-		* fully or partially. In such cases, this program will adjust
-		* the crop area to fit within the original image.
-		*
-		* isClipAreaAdjusted flas is usded to denote if there was any
-		* adjustment made.
-		*/
-		boolean isClipAreaAdjusted = false;
-		 
-		/**Checking for negative X Co-ordinate**/
-		if (clipX < 0) {
-			clipX = 0;
-			isClipAreaAdjusted = true;
-		}
-		/**Checking for negative Y Co-ordinate**/
-		if (clipY < 0) {
-			clipY = 0;
-			isClipAreaAdjusted = true;
-		}
-		Rectangle clip;
-		/**Checking if the clip area lies outside the rectangle**/
-		if ((size.width + clipX) <= img.getWidth() &&
-				(size.height + clipY) <= img.getHeight()) {
-			/**
-			* Setting up a clip rectangle when clip area
-			* lies within the image.
-			*/
-			clip = new Rectangle(size);
-			clip.x = clipX;
-			clip.y = clipY;
-		}
-		else {
-			/**
-			* Checking if the width of the clip area lies outside the image.
-			* If so, making the image width boundary as the clip width.
-			*/
-			if ((size.width + clipX) > img.getWidth())
-			size.width = img.getWidth() - clipX;
-			 
-			/**
-			* Checking if the height of the clip area lies outside the image.
-			* If so, making the image height boundary as the clip height.
-			*/
-			if ((size.height + clipY) > img.getHeight())
-			size.height = img.getHeight() - clipY;
-			 
-			/**Setting up the clip are based on our clip area size adjustment**/
-			clip = new Rectangle(size);
-			clip.x = clipX;
-			clip.y = clipY;
-			 
-			isClipAreaAdjusted = true;
-		}
-		if (isClipAreaAdjusted)
-			System.out.println("Crop Area Lied Outside The Image."
-			+ " Adjusted The Clip Rectangle\n");
-		return clip;
+		    int clipY) {
+        if (clipX < 0) {
+            clipX = 0;
+        }
+        if (clipY < 0) {
+            clipY = 0;
+        }
+        Rectangle clip;
+        if ((size.width + clipX) <= img.getWidth() &&
+                (size.height + clipY) <= img.getHeight()) {
+            clip = new Rectangle(size);
+            clip.x = clipX;
+            clip.y = clipY;
+        }
+        else {
+            if ((size.width + clipX) > img.getWidth()) {
+                size.width = img.getWidth() - clipX;
+            }
+            if ((size.height + clipY) > img.getHeight()) {
+                size.height = img.getHeight() - clipY;
+            }
+            clip = new Rectangle(size);
+            clip.x = clipX;
+            clip.y = clipY;
+        }
+        return clip;
 	}
 }
