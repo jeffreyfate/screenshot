@@ -2,17 +2,33 @@ package com.jeffthefate;
 
 import org.apache.log4j.Logger;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
- * Hello world!
- *
+ * Base screenshot class that needs to be implemented to specify a type.
+ * </p>
+ * Contains functions that all types of screenshots want and need to use.
  */
 public abstract class Screenshot {
-	
-	protected final int TEXT_HEIGHT_OFFSET = 2;
-	protected final String TWEET_DATE_FORMAT = "yyyy-MM-dd";
+
+    /**
+     * Space between each line of text added, in pixels
+     */
+	final int TEXT_HEIGHT_OFFSET = -2;
+    /**
+     * Format to use to post the date stamp on Twitter screenshot images
+     */
+	final String TWEET_DATE_FORMAT = "yyyy-MM-dd";
 
     public String getTemplateFile() {
         return templateFile;
@@ -66,7 +82,7 @@ public abstract class Screenshot {
      */
 	boolean willTextFit(int imageHeight, Graphics2D g2d,
             int numLines) {
-    	int totalTextHeight = numLines * (g2d.getFontMetrics().getHeight() -
+    	int totalTextHeight = numLines * (g2d.getFontMetrics().getHeight() +
                 TEXT_HEIGHT_OFFSET);
     	return totalTextHeight <= (imageHeight - verticalOffset);
     }
@@ -100,10 +116,9 @@ public abstract class Screenshot {
 	int addStringToImage(int startHeight, int startPos,
     		Graphics2D g2d, String string) {
     	FontMetrics fm = g2d.getFontMetrics();
-        int x = startPos;
         int textHeight = fm.getHeight();
         int y = textHeight + startHeight;
-        g2d.drawString(string, x, y);
+        g2d.drawString(string, startPos, y);
         return textHeight;
     }
 
@@ -157,4 +172,126 @@ public abstract class Screenshot {
         }
         return clip;
 	}
+
+    public Graphics2D getGraphics() {
+        return g2d;
+    }
+
+    public void setGraphics(Graphics2D g2d) {
+        this.g2d = g2d;
+    }
+
+    private Graphics2D g2d;
+
+    BufferedImage setupImage() {
+        FileInputStream fileInput;
+        try {
+            fileInput = new FileInputStream(new File(getTemplateFile()));
+        } catch (FileNotFoundException e) {
+            logger.error("Unable to read template file!");
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            return ImageIO.read(fileInput);
+        } catch (IOException e) {
+            logger.error("Unable to read template file!");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    void setupGraphics(BufferedImage img) {
+        Graphics2D g2d = img.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        //g2d.drawImage(img, 0, 0, null);
+        g2d.setPaint(Color.white);
+        setGraphics(g2d);
+    }
+
+    void setupFontMetrics(int fontSize, int height, int stringListSize) {
+        Font font;
+        do {
+            logger.info("Font size: " + fontSize);
+            font = new Font("Serif", Font.BOLD, --fontSize);
+            try {
+                font = Font.createFont(Font.TRUETYPE_FONT, new File(
+                        getFontFile()));
+                font = font.deriveFont((float) fontSize).deriveFont(
+                        Font.BOLD);
+            } catch (IOException e) {
+                logger.error("Unable to read font file!");
+                e.printStackTrace();
+            } catch (FontFormatException e) {
+                logger.error("Couldn't create font from " + getFontFile());
+                e.printStackTrace();
+            }
+            getGraphics().setFont(font);
+        } while (!willTextFit(height, getGraphics(), stringListSize));
+        logger.info(font.getFontName());
+        logger.info(font.getFamily());
+        logger.info("size: " + font.getSize());
+        logger.info("bold: " + font.isBold());
+    }
+
+    int drawStringsToImage(List<String> stringList, int width,
+            boolean isCentered) {
+        int currentHeight = getVerticalOffset();
+        for (String line : stringList) {
+            if (isCentered) {
+                currentHeight += (addCenteredStringToImage(currentHeight, width,
+                        getGraphics(), line) + TEXT_HEIGHT_OFFSET);
+            }
+            else {
+                currentHeight += (addStringToImage(currentHeight, width,
+                        getGraphics(), line) + TEXT_HEIGHT_OFFSET);
+            }
+        }
+        return currentHeight;
+    }
+
+    String tearDown(BufferedImage img, int width, int currentHeight,
+            String name, boolean crop) {
+        getGraphics().dispose();
+        if (crop) {
+            img = cropImage(img, 0, 0, width, currentHeight,
+                    getVerticalOffset());
+        }
+        String filename = "";
+        try {
+            filename += name;
+            filename += System.currentTimeMillis();
+            filename += ".jpg";
+            File file = new File(filename);
+            ImageIO.write(img, "jpg", file);
+        } catch (IOException e) {
+            logger.error("Unable to write image to file " + filename);
+            e.printStackTrace();
+        }
+        return filename;
+    }
+
+    void addTimestamp(int dateFontSize, int currentHeight, int width) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                TWEET_DATE_FORMAT);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("PST"));
+        Date date = new Date();
+        String dateString = dateFormat.format(date);
+        Font font = new Font("Serif", Font.BOLD, dateFontSize);
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT,
+                    new File(getFontFile()));
+            font = font.deriveFont((float) dateFontSize).deriveFont(
+                    Font.BOLD);
+        } catch (Exception e) {
+            logger.error("Unable to create font from " + getFontFile());
+            e.printStackTrace();
+        }
+        g2d.setFont(font);
+        FontMetrics fm = g2d.getFontMetrics();
+        addStringToImage(currentHeight+(getVerticalOffset()/2),
+                width-fm.stringWidth(dateString)-(width/16), g2d, dateString);
+    }
+
 }
