@@ -81,7 +81,10 @@ public class TriviaScreenshot extends Screenshot {
             sb = new StringBuilder();
             sb.append("@");
             sb.append(player.getKey());
-            addStringToImage(currentHeight, width/8, g2d, sb.toString());
+            int fontHeight = fm.getHeight();
+            System.out.println("fontHeight: " + fontHeight);
+            addStringToImage(currentHeight, fontHeight*3, g2d,
+                    sb.toString());
             stringWidth = fm.stringWidth(
                     Integer.toString(player.getValue()));
             currentHeight += addStringToImage(currentHeight,
