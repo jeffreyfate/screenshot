@@ -7,8 +7,8 @@ import java.util.Arrays;
 public class SetlistScreenshot extends Screenshot {
 
 	public SetlistScreenshot(String templateFile, String fontFile,
-			String text, int fontSize, int verticalOffset) {
-		super(templateFile, fontFile, verticalOffset);
+			String text, int fontSize, int verticalOffset, String filename) {
+		super(templateFile, fontFile, verticalOffset, filename);
         setOutputFilename(createScreenshot(text, fontSize));
 	}
 	
@@ -21,7 +21,7 @@ public class SetlistScreenshot extends Screenshot {
         setupGraphics(img);
         setupFontMetrics(fontSize, height, setlistList.size());
         int currentHeight = drawStringsToImage(setlistList, width, true);
-        return tearDown(img, width, currentHeight, "setlist", true);
+        return tearDown(img, width, currentHeight, true);
     }
 
 }

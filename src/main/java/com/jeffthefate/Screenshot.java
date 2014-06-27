@@ -49,15 +49,26 @@ public abstract class Screenshot {
     private String templateFile;
 	private String fontFile;
 	private String outputFile;
+
+    public String getOutputName() {
+        return outputName;
+    }
+
+    public void setOutputName(String outputName) {
+        this.outputName = outputName;
+    }
+
+    private String outputName;
 	private int verticalOffset;
 
     private Logger logger = Logger.getLogger(Screenshot.class);
 	
 	public Screenshot(String templateFile, String fontFile,
-            int verticalOffset) {
+            int verticalOffset, String outputName) {
 		this.templateFile = templateFile;
 		this.fontFile = fontFile;
 		this.verticalOffset = verticalOffset;
+        this.outputName = outputName;
 	}
 	
 	public String getOutputFilename() {
@@ -252,7 +263,7 @@ public abstract class Screenshot {
     }
 
     String tearDown(BufferedImage img, int width, int currentHeight,
-            String name, boolean crop) {
+            boolean crop) {
         getGraphics().dispose();
         if (crop) {
             img = cropImage(img, 0, 0, width, currentHeight,
@@ -260,7 +271,7 @@ public abstract class Screenshot {
         }
         String filename = "";
         try {
-            filename += name;
+            filename += getOutputName();
             filename += System.currentTimeMillis();
             filename += ".jpg";
             File file = new File(filename);

@@ -44,8 +44,8 @@ public class TriviaScreenshot extends Screenshot {
 	public TriviaScreenshot(String templateFile, String fontFile,
             String titleText, TreeMap<String, Integer> sortedMap,
             int mainFontSize, int dateFontSize, int scoresLimit,
-            int verticalOffset) {
-		super(templateFile, fontFile, verticalOffset);
+            int verticalOffset, String filename) {
+		super(templateFile, fontFile, verticalOffset, filename);
         if (titleText != null) {
             this.titleText = titleText;
         }
@@ -82,7 +82,6 @@ public class TriviaScreenshot extends Screenshot {
             sb.append("@");
             sb.append(player.getKey());
             int fontHeight = fm.getHeight();
-            System.out.println("fontHeight: " + fontHeight);
             addStringToImage(currentHeight, fontHeight*3, g2d,
                     sb.toString());
             stringWidth = fm.stringWidth(
@@ -117,7 +116,7 @@ public class TriviaScreenshot extends Screenshot {
         currentHeight = addSpacedUserScores(sortedMap, getGraphics(),
                 currentHeight, width);
         addTimestamp(dateFontSize, currentHeight, width);
-        return tearDown(img, width, currentHeight, "trivia", true);
+        return tearDown(img, width, currentHeight, true);
     }
 
 }
