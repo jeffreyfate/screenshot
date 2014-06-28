@@ -12,10 +12,16 @@ import java.util.TreeMap;
 public class TriviaScreenshotTest extends TestCase {
 
     private ImageUtil imageUtil;
+    private TriviaScreenshot triviaScreenshot;
 
     public void setUp() throws Exception {
         super.setUp();
         imageUtil = ImageUtil.instance();
+        triviaScreenshot = new TriviaScreenshot(
+                new File("src/test/resources/setlist.jpg").getAbsolutePath(),
+                new File("src/test/resources/roboto.ttf").getAbsolutePath(),
+                "Top Scores", null, 60, 30, 10, 200, 100,
+                "target/" + getName());
     }
 
     public void testShortTopScores() {
@@ -23,11 +29,8 @@ public class TriviaScreenshotTest extends TestCase {
         playerMap.put("player1", 1000);
         playerMap.put("player2", 900);
         playerMap.put("player3", 800);
-        TriviaScreenshot triviaScreenshot = new TriviaScreenshot(
-                new File("src/test/resources/setlist.jpg").getAbsolutePath(),
-                new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                "Top Scores", playerMap, 60, 30, 10, 200,
-                "target/testShortTopScores");
+        triviaScreenshot.setSortedMap(playerMap);
+        triviaScreenshot.createScreenshot();
         double percentDiff = imageUtil.compareImages(
                 "src/test/resources/triviaShort.jpg",
                 triviaScreenshot.getOutputFilename());
@@ -46,11 +49,8 @@ public class TriviaScreenshotTest extends TestCase {
         playerMap.put("player8", 300);
         playerMap.put("player9", 200);
         playerMap.put("player10", 100);
-        TriviaScreenshot triviaScreenshot = new TriviaScreenshot(
-                new File("src/test/resources/setlist.jpg").getAbsolutePath(),
-                new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                "Top Scores", playerMap, 60, 30, 10, 200,
-                "target/testLongTopScores");
+        triviaScreenshot.setSortedMap(playerMap);
+        triviaScreenshot.createScreenshot();
         double percentDiff = imageUtil.compareImages(
                 "src/test/resources/triviaLong.jpg",
                 triviaScreenshot.getOutputFilename());

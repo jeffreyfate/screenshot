@@ -59,15 +59,26 @@ public abstract class Screenshot {
     }
 
     private String outputName;
-	private int verticalOffset;
+	private int topOffset;
+
+    public int getBottomOffset() {
+        return bottomOffset;
+    }
+
+    public void setBottomOffset(int bottomOffset) {
+        this.bottomOffset = bottomOffset;
+    }
+
+    private int bottomOffset;
 
     private Logger logger = Logger.getLogger(Screenshot.class);
 	
 	public Screenshot(String templateFile, String fontFile,
-            int verticalOffset, String outputName) {
+            int topOffset, int bottomOffset, String outputName) {
 		this.templateFile = templateFile;
 		this.fontFile = fontFile;
-		this.verticalOffset = verticalOffset;
+		this.topOffset = topOffset;
+        this.bottomOffset = bottomOffset;
         this.outputName = outputName;
 	}
 	
@@ -79,12 +90,12 @@ public abstract class Screenshot {
 		this.outputFile = outputFile;
 	}
 	
-	public int getVerticalOffset() {
-		return verticalOffset;
+	public int getTopOffset() {
+		return topOffset;
 	}
 
     /**
-     * Check if another line of text will fit on the image.
+     * Check if the given number of lines of text will fit on the image.
      *
      * @param imageHeight   height of the image to be drawn on
      * @param g2d           graphics object that will be drawn on
@@ -95,7 +106,7 @@ public abstract class Screenshot {
             int numLines) {
     	int totalTextHeight = numLines * (g2d.getFontMetrics().getHeight() +
                 TEXT_HEIGHT_OFFSET);
-    	return totalTextHeight <= (imageHeight - verticalOffset);
+    	return totalTextHeight <= (imageHeight - topOffset - bottomOffset);
     }
 
     /**
@@ -224,7 +235,6 @@ public abstract class Screenshot {
     void setupFontMetrics(int fontSize, int height, int stringListSize) {
         Font font;
         do {
-            logger.info("Font size: " + fontSize);
             font = new Font("Serif", Font.BOLD, --fontSize);
             try {
                 font = Font.createFont(Font.TRUETYPE_FONT, new File(
@@ -242,13 +252,11 @@ public abstract class Screenshot {
         } while (!willTextFit(height, getGraphics(), stringListSize));
         logger.info(font.getFontName());
         logger.info(font.getFamily());
-        logger.info("size: " + font.getSize());
-        logger.info("bold: " + font.isBold());
     }
 
     int drawStringsToImage(List<String> stringList, int width,
             boolean isCentered) {
-        int currentHeight = getVerticalOffset();
+        int currentHeight = getTopOffset();
         for (String line : stringList) {
             if (isCentered) {
                 currentHeight += (addCenteredStringToImage(currentHeight, width,
@@ -267,7 +275,7 @@ public abstract class Screenshot {
         getGraphics().dispose();
         if (crop) {
             img = cropImage(img, 0, 0, width, currentHeight,
-                    getVerticalOffset());
+                    getTopOffset());
         }
         String filename = "";
         try {
@@ -301,7 +309,7 @@ public abstract class Screenshot {
         }
         g2d.setFont(font);
         FontMetrics fm = g2d.getFontMetrics();
-        addStringToImage(currentHeight+(getVerticalOffset()/2),
+        addStringToImage(currentHeight+(getTopOffset()/2),
                 width-fm.stringWidth(dateString)-(width/16), g2d, dateString);
     }
 

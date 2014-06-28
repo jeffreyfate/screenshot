@@ -39,15 +39,29 @@ public class TriviaScreenshot extends Screenshot {
     private String titleText = TITLE_TEXT;
     private int scoresLimit = SCORES_LIMIT;
 
+    private int mainFontSize;
+
+    public TreeMap<String, Integer> getSortedMap() {
+        return sortedMap;
+    }
+
+    public void setSortedMap(TreeMap<String, Integer> sortedMap) {
+        this.sortedMap = sortedMap;
+    }
+
     private TreeMap<String, Integer> sortedMap;
 	
 	public TriviaScreenshot(String templateFile, String fontFile,
             String titleText, TreeMap<String, Integer> sortedMap,
             int mainFontSize, int dateFontSize, int scoresLimit,
-            int verticalOffset, String filename) {
-		super(templateFile, fontFile, verticalOffset, filename);
+            int topOffset, int bottomOffset, String filename) {
+		super(templateFile, fontFile, topOffset, bottomOffset, filename);
         if (titleText != null) {
             this.titleText = titleText;
+        }
+        this.sortedMap = sortedMap;
+        if (mainFontSize >= 0) {
+            this.mainFontSize = mainFontSize;
         }
         if (dateFontSize >= 0) {
             this.dateFontSize = dateFontSize;
@@ -55,7 +69,6 @@ public class TriviaScreenshot extends Screenshot {
         if (scoresLimit > 0) {
             this.scoresLimit = scoresLimit;
         }
-		setOutputFilename(createScreenshot(sortedMap, mainFontSize));
 	}
 
     private int addSpacedUserScores(TreeMap<String, Integer> sortedMap,
@@ -95,28 +108,22 @@ public class TriviaScreenshot extends Screenshot {
     }
 
     /**
-     * Create screenshot with given title and list of scores.
-     *
-     * @param sortedMap     user scores
-     * @param mainFontSize  text size for scores
-     * @return              filename of the screenshot
+     * Create screenshot of list of scores; stores output filename.
      */
-	String createScreenshot(TreeMap<String, Integer> sortedMap,
-            int mainFontSize) {
+	void createScreenshot() {
         BufferedImage img = setupImage();
         int height = img.getHeight();
         int width = img.getWidth();
         setupGraphics(img);
-        // TODO Fix this to be accurate
-        setupFontMetrics(mainFontSize, height, scoresLimit+4);
-        int currentHeight = getVerticalOffset();
+        setupFontMetrics(mainFontSize, height, scoresLimit);
+        int currentHeight = getTopOffset();
         currentHeight += (addCenteredStringToImage(currentHeight, width,
                 getGraphics(), titleText) + TEXT_HEIGHT_OFFSET);
         currentHeight += 40;
         currentHeight = addSpacedUserScores(sortedMap, getGraphics(),
                 currentHeight, width);
         addTimestamp(dateFontSize, currentHeight, width);
-        return tearDown(img, width, currentHeight, true);
+        setOutputFilename(tearDown(img, width, currentHeight, true));
     }
 
 }

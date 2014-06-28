@@ -20,7 +20,7 @@ public class ScreenshotTest extends TestCase {
     }
 
     public void testWillTextFit() {
-        Screenshot screenshot = new Screenshot("", "", 180,
+        Screenshot screenshot = new Screenshot("", "", 180, 60,
                 "target/testWillTextFit") {};
         BufferedImage bufferedImage = new BufferedImage(400, 800,
                 BufferedImage.TYPE_INT_RGB);
@@ -36,7 +36,7 @@ public class ScreenshotTest extends TestCase {
     }
 
     public void testAddCenteredStringToImage() {
-        Screenshot screenshot = new Screenshot("", "", 180,
+        Screenshot screenshot = new Screenshot("", "", 180, 60,
                 "target/testAddCenteredStringToImage") {};
         BufferedImage bufferedImage = new BufferedImage(400, 800,
                 BufferedImage.TYPE_INT_RGB);
@@ -46,7 +46,7 @@ public class ScreenshotTest extends TestCase {
     }
 
     public void testAddStringToImage() {
-        Screenshot screenshot = new Screenshot("", "", 180,
+        Screenshot screenshot = new Screenshot("", "", 180, 60,
                 "target/testAddStringToImage") {};
         BufferedImage bufferedImage = new BufferedImage(400, 800,
                 BufferedImage.TYPE_INT_RGB);
@@ -56,7 +56,7 @@ public class ScreenshotTest extends TestCase {
     }
 
     public void testCropImage() {
-        Screenshot screenshot = new Screenshot("", "", 180,
+        Screenshot screenshot = new Screenshot("", "", 180, 60,
                 "target/testCropImage") {};
         BufferedImage bufferedImage = new BufferedImage(400, 800,
                 BufferedImage.TYPE_INT_RGB);
@@ -70,12 +70,12 @@ public class ScreenshotTest extends TestCase {
         Screenshot screenshot = new Screenshot(
                 new File("src/test/resources/setlist.jpg").getAbsolutePath(),
                 new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                180, "target/testAddTimeStamp") {};
+                180, 60, "target/testAddTimeStamp") {};
         BufferedImage bufferedImage = screenshot.setupImage();
         screenshot.setupGraphics(bufferedImage);
         screenshot.setupFontMetrics(20, bufferedImage.getHeight(), 1);
-        int currentHeight = screenshot.getVerticalOffset() +
-                screenshot.addStringToImage(screenshot.getVerticalOffset(), 100,
+        int currentHeight = screenshot.getTopOffset() +
+                screenshot.addStringToImage(screenshot.getTopOffset(), 100,
                         screenshot.getGraphics(), "TEST STRING");
         screenshot.addTimestamp(20, currentHeight, bufferedImage.getWidth());
         screenshot.setOutputFilename(screenshot.tearDown(bufferedImage,

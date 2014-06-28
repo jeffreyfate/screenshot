@@ -6,13 +6,26 @@ import java.util.Arrays;
 
 public class SetlistScreenshot extends Screenshot {
 
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    private String text;
+    private int fontSize;
+
 	public SetlistScreenshot(String templateFile, String fontFile,
-			String text, int fontSize, int verticalOffset, String filename) {
-		super(templateFile, fontFile, verticalOffset, filename);
-        setOutputFilename(createScreenshot(text, fontSize));
+			String text, int fontSize, int topOffset, int bottomOffset,
+            String filename) {
+		super(templateFile, fontFile, topOffset, bottomOffset, filename);
+        this.text = text;
+        this.fontSize = fontSize;
 	}
 	
-	String createScreenshot(String text, int fontSize) {
+	void createScreenshot() {
     	ArrayList<String> setlistList = new ArrayList<String>(Arrays.asList(
                 text.split("\n")));
         BufferedImage img = setupImage();
@@ -21,7 +34,7 @@ public class SetlistScreenshot extends Screenshot {
         setupGraphics(img);
         setupFontMetrics(fontSize, height, setlistList.size());
         int currentHeight = drawStringsToImage(setlistList, width, true);
-        return tearDown(img, width, currentHeight, true);
+        setOutputFilename(tearDown(img, width, currentHeight, true));
     }
 
 }
