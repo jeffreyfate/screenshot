@@ -34,7 +34,7 @@ public class TriviaScreenshotTest extends TestCase {
         double percentDiff = imageUtil.compareImages(
                 "src/test/resources/triviaShort.jpg",
                 triviaScreenshot.getOutputFilename());
-        assertEquals("Images are not exact same!", 0.0, percentDiff);
+        assertTrue("Images are not exact same!", percentDiff <= 0.1);
     }
 
     public void testLongTopScores() {
@@ -54,7 +54,7 @@ public class TriviaScreenshotTest extends TestCase {
         double percentDiff = imageUtil.compareImages(
                 "src/test/resources/triviaLong.jpg",
                 triviaScreenshot.getOutputFilename());
-        assertEquals("Images are not exact same!", 0.0, percentDiff);
+        assertTrue("Images are not exact same!", percentDiff <= 0.1);
     }
 
 }

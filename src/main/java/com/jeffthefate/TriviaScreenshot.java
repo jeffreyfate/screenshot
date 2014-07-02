@@ -110,7 +110,7 @@ public class TriviaScreenshot extends Screenshot {
     /**
      * Create screenshot of list of scores; stores output filename.
      */
-	void createScreenshot() {
+	public void createScreenshot() {
         BufferedImage img = setupImage();
         int height = img.getHeight();
         int width = img.getWidth();

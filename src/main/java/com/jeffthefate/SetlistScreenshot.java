@@ -25,7 +25,7 @@ public class SetlistScreenshot extends Screenshot {
         this.fontSize = fontSize;
 	}
 	
-	void createScreenshot() {
+	public void createScreenshot() {
     	ArrayList<String> setlistList = new ArrayList<String>(Arrays.asList(
                 text.split("\n")));
         BufferedImage img = setupImage();
