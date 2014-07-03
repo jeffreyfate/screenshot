@@ -6,9 +6,6 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.util.TreeMap;
 
-/**
- * Created by Jeff on 6/17/2014.
- */
 public class TriviaScreenshotTest extends TestCase {
 
     private ImageUtil imageUtil;
@@ -25,7 +22,7 @@ public class TriviaScreenshotTest extends TestCase {
     }
 
     public void testShortTopScores() {
-        TreeMap<String, Integer> playerMap = new TreeMap<String, Integer>();
+        TreeMap<String, Integer> playerMap = new TreeMap<>();
         playerMap.put("player1", 1000);
         playerMap.put("player2", 900);
         playerMap.put("player3", 800);
@@ -38,7 +35,7 @@ public class TriviaScreenshotTest extends TestCase {
     }
 
     public void testLongTopScores() {
-        TreeMap<String, Integer> playerMap = new TreeMap<String, Integer>();
+        TreeMap<String, Integer> playerMap = new TreeMap<>();
         playerMap.put("player1", 1000);
         playerMap.put("player2", 900);
         playerMap.put("player3", 800);

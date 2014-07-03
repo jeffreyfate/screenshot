@@ -5,9 +5,6 @@ import junit.framework.TestCase;
 
 import java.io.File;
 
-/**
- * Created by Jeff on 6/17/2014.
- */
 public class SetlistScreenshotTest extends TestCase {
 
     private ImageUtil imageUtil;
@@ -19,7 +16,7 @@ public class SetlistScreenshotTest extends TestCase {
         setlistScreenshot = new SetlistScreenshot(
                 new File("src/test/resources/setlist.jpg").getAbsolutePath(),
                 new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                "", 60, 180, 60, "target/" + getName());
+                "", 30, 180, 60, "target/" + getName());
     }
 
     public void testReallyLongSetlist() {

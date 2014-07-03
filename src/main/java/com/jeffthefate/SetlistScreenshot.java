@@ -26,7 +26,7 @@ public class SetlistScreenshot extends Screenshot {
 	}
 	
 	public void createScreenshot() {
-    	ArrayList<String> setlistList = new ArrayList<String>(Arrays.asList(
+    	ArrayList<String> setlistList = new ArrayList<>(Arrays.asList(
                 text.split("\n")));
         BufferedImage img = setupImage();
         int height = img.getHeight();
