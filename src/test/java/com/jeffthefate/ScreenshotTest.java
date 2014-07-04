@@ -80,9 +80,10 @@ public class ScreenshotTest extends TestCase {
         screenshot.addTimestamp(20, currentHeight, bufferedImage.getWidth());
         screenshot.setOutputFilename(screenshot.tearDown(bufferedImage,
                 bufferedImage.getWidth(), currentHeight, true));
-        assertTrue("Timestamp images don't match!", imageUtil.compareImages(
+        double diff = imageUtil.compareImages(
                 "src/test/resources/addTimeStamp.jpg",
-                screenshot.getOutputFilename()) <= 0.1);
+                screenshot.getOutputFilename());
+        assertTrue("Timestamp images don't match!", diff >= 0 && diff <= 0.1);
     }
 
 }

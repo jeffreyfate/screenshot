@@ -17,7 +17,7 @@ public class TriviaScreenshotTest extends TestCase {
         triviaScreenshot = new TriviaScreenshot(
                 new File("src/test/resources/setlist.jpg").getAbsolutePath(),
                 new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                "Top Scores", null, 60, 30, 10, 200, 100,
+                "Top Scores", null, 40, 20, 10, 200, 100,
                 "target/" + getName());
     }
 
@@ -31,7 +31,8 @@ public class TriviaScreenshotTest extends TestCase {
         double percentDiff = imageUtil.compareImages(
                 "src/test/resources/triviaShort.jpg",
                 triviaScreenshot.getOutputFilename());
-        assertTrue("Images are not exact same!", percentDiff <= 0.1);
+        assertTrue("Images are not exact same!", percentDiff >=0 && percentDiff
+                <= 0.1);
     }
 
     public void testLongTopScores() {
@@ -51,7 +52,8 @@ public class TriviaScreenshotTest extends TestCase {
         double percentDiff = imageUtil.compareImages(
                 "src/test/resources/triviaLong.jpg",
                 triviaScreenshot.getOutputFilename());
-        assertTrue("Images are not exact same!", percentDiff <= 0.1);
+        assertTrue("Images are not exact same!", percentDiff >=0 && percentDiff
+                <= 0.1);
     }
 
 }

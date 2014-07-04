@@ -16,7 +16,7 @@ public class SetlistScreenshotTest extends TestCase {
         setlistScreenshot = new SetlistScreenshot(
                 new File("src/test/resources/setlist.jpg").getAbsolutePath(),
                 new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                "", 30, 180, 60, "target/" + getName());
+                "", 35, 140, 20, "target/" + getName());
     }
 
     public void testReallyLongSetlist() {
