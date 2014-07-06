@@ -34,7 +34,7 @@ public class SetlistScreenshot extends Screenshot {
         setupGraphics(img);
         setupFontMetrics(fontSize, height, setlistList.size());
         int currentHeight = drawStringsToImage(setlistList, width, true);
-        setOutputFilename(tearDown(img, width, currentHeight, false));
+        setOutputFilename(tearDown(img, width, currentHeight, true));
     }
 
 }

@@ -17,12 +17,12 @@ public class TriviaScreenshotTest extends TestCase {
         triviaScreenshot = new TriviaScreenshot(
                 new File("src/test/resources/setlist.jpg").getAbsolutePath(),
                 new File("src/test/resources/roboto.ttf").getAbsolutePath(),
-                "Top Scores", null, 40, 20, 10, 200, 100,
+                "Top Setlist Scores", null, 34, 17, 10, 160, 80,
                 "target/" + getName());
     }
 
     public void testShortTopScores() {
-        TreeMap<String, Integer> playerMap = new TreeMap<>();
+        TreeMap<Object, Object> playerMap = new TreeMap<>();
         playerMap.put("player1", 1000);
         playerMap.put("player2", 900);
         playerMap.put("player3", 800);
@@ -36,7 +36,7 @@ public class TriviaScreenshotTest extends TestCase {
     }
 
     public void testLongTopScores() {
-        TreeMap<String, Integer> playerMap = new TreeMap<>();
+        TreeMap<Object, Object> playerMap = new TreeMap<>();
         playerMap.put("player1", 1000);
         playerMap.put("player2", 900);
         playerMap.put("player3", 800);

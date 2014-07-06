@@ -41,18 +41,18 @@ public class TriviaScreenshot extends Screenshot {
 
     private int mainFontSize;
 
-    public TreeMap<String, Integer> getSortedMap() {
+    public TreeMap<Object, Object> getSortedMap() {
         return sortedMap;
     }
 
-    public void setSortedMap(TreeMap<String, Integer> sortedMap) {
+    public void setSortedMap(TreeMap<Object, Object> sortedMap) {
         this.sortedMap = sortedMap;
     }
 
-    private TreeMap<String, Integer> sortedMap;
+    private TreeMap<Object, Object> sortedMap;
 	
 	public TriviaScreenshot(String templateFile, String fontFile,
-            String titleText, TreeMap<String, Integer> sortedMap,
+            String titleText, TreeMap<Object, Object> sortedMap,
             int mainFontSize, int dateFontSize, int scoresLimit,
             int topOffset, int bottomOffset, String filename) {
 		super(templateFile, fontFile, topOffset, bottomOffset, filename);
@@ -71,13 +71,13 @@ public class TriviaScreenshot extends Screenshot {
         }
 	}
 
-    private int addSpacedUserScores(TreeMap<String, Integer> sortedMap,
+    private int addSpacedUserScores(TreeMap<Object, Object> sortedMap,
             Graphics2D g2d, int currentHeight, int width) {
         int position = 1;
         StringBuilder sb;
         FontMetrics fm = g2d.getFontMetrics();
         int stringWidth;
-        for (Entry<String, Integer> player : sortedMap.entrySet()) {
+        for (Entry<Object, Object> player : sortedMap.entrySet()) {
             if (position > scoresLimit) {
                 break;
             }
@@ -98,10 +98,10 @@ public class TriviaScreenshot extends Screenshot {
             addStringToImage(currentHeight, fontHeight*3, g2d,
                     sb.toString());
             stringWidth = fm.stringWidth(
-                    Integer.toString(player.getValue()));
+                    Integer.toString((Integer)player.getValue()));
             currentHeight += addStringToImage(currentHeight,
                     (width-stringWidth)-(width/16), g2d,
-                    Integer.toString(player.getValue()));
+                    Integer.toString((Integer)player.getValue()));
             position++;
         }
         return currentHeight;

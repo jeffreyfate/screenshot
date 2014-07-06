@@ -309,7 +309,7 @@ public abstract class Screenshot {
         }
         g2d.setFont(font);
         FontMetrics fm = g2d.getFontMetrics();
-        addStringToImage(currentHeight+(getTopOffset()/2),
+        addStringToImage(currentHeight+getTopOffset()-(fm.getHeight()*2),
                 width-fm.stringWidth(dateString)-(width/16), g2d, dateString);
     }
 
