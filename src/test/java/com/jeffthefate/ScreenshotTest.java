@@ -41,7 +41,7 @@ public class ScreenshotTest extends TestCase {
         BufferedImage bufferedImage = new BufferedImage(400, 800,
                 BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = bufferedImage.createGraphics();
-        Assert.assertEquals("Height of text drawn is wrong!", 16,
+        Assert.assertEquals("Height of text drawn is wrong!", 15,
                 screenshot.addCenteredStringToImage(0, 0, g2d, "TEST STRING"));
     }
 
@@ -51,7 +51,7 @@ public class ScreenshotTest extends TestCase {
         BufferedImage bufferedImage = new BufferedImage(400, 800,
                 BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = bufferedImage.createGraphics();
-        Assert.assertEquals("Height of text drawn is wrong!", 16,
+        Assert.assertEquals("Height of text drawn is wrong!", 15,
                 screenshot.addStringToImage(0, 0, g2d, "TEST STRING"));
     }
 
@@ -83,7 +83,7 @@ public class ScreenshotTest extends TestCase {
         double diff = imageUtil.compareImages(
                 "src/test/resources/addTimeStamp.jpg",
                 screenshot.getOutputFilename());
-        assertTrue("Timestamp images don't match!", diff >= 0 && diff <= 0.1);
+        assertTrue("Timestamp images don't match!", diff >= 0 && diff <= 0.11);
     }
 
 }
