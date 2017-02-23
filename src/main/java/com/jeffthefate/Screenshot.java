@@ -16,7 +16,7 @@ import java.util.TimeZone;
 
 /**
  * Base screenshot class that needs to be implemented to specify a type.
- * </p>
+ * <p>
  * Contains functions that all types of screenshots want and need to use.
  */
 public abstract class Screenshot {
